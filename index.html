@@ -291,6 +291,7 @@ body::before{
 .btn-install{padding:8px 18px;border-radius:20px;border:none;background:var(--gold);color:#fff;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;font-weight:500}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem}
 .stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem;text-align:center}
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 2rem}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--gold)}
 .stat-lbl{font-size:11px;color:var(--ink3);margin-top:2px}
 
@@ -338,9 +339,13 @@ body::before{
     overflow-y:visible;
   }
   .grid-2,.grid-3{grid-template-columns:1fr}
+  .pillar-grid{grid-template-columns:1fr}
   .greeting-text{font-size:22px}
   .quote-text{font-size:16px}
   .stat-row{grid-template-columns:repeat(3,1fr)}
+  .stat-card{padding:0.75rem 0.5rem}
+  .stat-num{font-size:22px}
+  .stat-lbl{font-size:10px}
   .install-banner{flex-direction:column;align-items:flex-start}
 }
 </style>
@@ -442,7 +447,7 @@ body::before{
 
   <div class="card gap-sec">
     <div class="sec-title">Growth pillars — how am I doing this week?</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 2rem">
+    <div class="pillar-grid">
       <div>
         <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-esteem</span><span class="pillar-val" id="pv-0">70%</span></div><div class="pillar-track" onclick="cyclePillar(0,event)"><div class="pillar-fill" id="pf-0" style="width:70%;background:var(--lavender)"></div></div></div>
         <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-respect</span><span class="pillar-val" id="pv-1">60%</span></div><div class="pillar-track" onclick="cyclePillar(1,event)"><div class="pillar-fill" id="pf-1" style="width:60%;background:var(--sage)"></div></div></div>
