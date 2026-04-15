@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Châu · Daily Thriving</title>
+
+<!-- PWA + GitHub Pages meta -->
+<meta name="description" content="A personal daily dashboard for growth, reflection, and intentional living — built for an INFJ Advocate.">
+<meta name="theme-color" content="#1c1a14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Thriving">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Open Graph (looks good when shared) -->
+<meta property="og:title" content="Châu · Daily Thriving">
+<meta property="og:description" content="A personal daily dashboard for growth, reflection, and intentional living.">
+<meta property="og:type" content="website">
+
+<!-- PWA manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Apple touch icon fallback -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#1c1a14;
+  --ink2:#5a5649;
+  --ink3:#9a9488;
+  --paper:#f7f4ee;
+  --paper2:#efe9df;
+  --paper3:#e5ddd0;
+  --line:rgba(28,26,20,0.1);
+  --line2:rgba(28,26,20,0.06);
+  --gold:#b8974a;
+  --gold-light:#f0e4c0;
+  --sage:#6b8f71;
+  --sage-light:#deeadf;
+  --rose:#a05c5c;
+  --rose-light:#f0dede;
+  --lavender:#7b6fa0;
+  --lavender-light:#e8e4f3;
+  --r:12px;--rl:18px;
+  --shadow:0 2px 20px rgba(28,26,20,0.07);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html{font-size:15px;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  padding:0;
+  position:relative;
+  overscroll-behavior:none;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.4;
+}
+
+.shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh;position:relative;z-index:1}
+
+/* ---- SIDEBAR ---- */
+.sidebar{
+  background:var(--paper2);
+  border-right:1px solid var(--line);
+  padding:2rem 1.5rem;
+  display:flex;flex-direction:column;gap:1.75rem;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+
+.logo{display:flex;align-items:center;gap:10px;padding-bottom:1.5rem;border-bottom:1px solid var(--line)}
+.logo-mark{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;font-weight:400;
+}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--ink);line-height:1.2}
+.logo-text span{display:block;font-size:11px;color:var(--ink3);font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:0.04em}
+
+.nav-label{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.nav-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:var(--r);
+  font-size:13px;color:var(--ink2);
+  cursor:pointer;transition:all 0.15s;
+  border:none;background:none;width:100%;text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-item:hover{background:var(--paper3);color:var(--ink)}
+.nav-item.active{background:var(--ink);color:var(--paper)}
+.nav-icon{width:16px;height:16px;opacity:0.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+
+.sidebar-quote{
+  margin-top:auto;
+  background:var(--gold-light);
+  border-radius:var(--r);padding:1rem 1.1rem;
+  border-left:2px solid var(--gold);
+}
+.sidebar-quote p{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--ink);line-height:1.6;margin-bottom:6px}
+.sidebar-quote cite{font-size:11px;color:var(--ink3);font-style:normal}
+
+/* ---- MAIN ---- */
+.main{padding:2rem 2.5rem;overflow-y:auto;max-height:100vh}
+
+.page-header{margin-bottom:2rem}
+.page-header h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;color:var(--ink);margin-bottom:4px}
+.page-header p{font-size:13px;color:var(--ink3)}
+
+.sec-title{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--rl);padding:1.25rem 1.4rem;box-shadow:var(--shadow)}
+.card-sm{padding:1rem 1.1rem}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gap-sec{margin-bottom:1.75rem}
+
+/* ---- GREETING ---- */
+.greeting-card{
+  background:linear-gradient(135deg,var(--ink) 0%,#2d2a20 100%);
+  border-radius:var(--rl);padding:1.75rem 2rem;
+  margin-bottom:1.75rem;position:relative;overflow:hidden;
+}
+.greeting-card::after{content:'';position:absolute;right:-30px;top:-30px;width:180px;height:180px;border-radius:50%;background:rgba(184,151,74,0.12)}
+.greeting-card::before{content:'';position:absolute;right:60px;bottom:-40px;width:120px;height:120px;border-radius:50%;background:rgba(184,151,74,0.07)}
+.greeting-date{font-size:11px;letter-spacing:0.08em;color:rgba(247,244,238,0.5);text-transform:uppercase;margin-bottom:10px}
+.greeting-text{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--paper);line-height:1.3;margin-bottom:4px}
+.greeting-sub{font-size:13px;color:rgba(247,244,238,0.55)}
+
+/* ---- QUOTE ---- */
+.quote-card{background:var(--gold-light);border:1px solid rgba(184,151,74,0.25);border-radius:var(--rl);padding:1.4rem 1.6rem;margin-bottom:1.75rem;position:relative}
+.quote-mark{font-family:'Cormorant Garamond',serif;font-size:60px;line-height:0.7;color:var(--gold);opacity:0.3;position:absolute;top:12px;left:14px}
+.quote-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;font-weight:300;color:var(--ink);line-height:1.6;padding-left:1.5rem;margin-bottom:8px}
+.quote-meta{display:flex;justify-content:space-between;align-items:center;padding-left:1.5rem}
+.quote-author{font-size:12px;color:var(--ink2)}
+.quote-tag{font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(184,151,74,0.2);color:var(--gold);padding:3px 8px;border-radius:20px}
+.quote-nav{display:flex;gap:6px;margin-top:10px;padding-left:1.5rem}
+.quote-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(184,151,74,0.3);background:none;color:var(--ink2);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.quote-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+
+/* ---- HABITS ---- */
+.habit-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.habit-row:last-child{border-bottom:none}
+.habit-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;background:#fff}
+.habit-check.done{background:var(--sage);border-color:var(--sage)}
+.habit-check.done::after{content:'✓';font-size:11px;color:#fff;font-weight:500}
+.habit-label{flex:1;font-size:13px;color:var(--ink)}
+.habit-label.done{text-decoration:line-through;color:var(--ink3)}
+.habit-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--paper2);color:var(--ink3)}
+
+/* ---- MOOD ---- */
+.mood-grid{display:flex;gap:8px;flex-wrap:wrap}
+.mood-btn{padding:6px 12px;border-radius:20px;font-size:12px;border:1px solid var(--line);background:#fff;cursor:pointer;transition:all 0.15s;color:var(--ink2);font-family:'DM Sans',sans-serif}
+.mood-btn:hover{transform:scale(1.04)}
+.mood-btn.active{font-weight:500;border-width:1.5px}
+.mood-energy.active{background:var(--gold-light);border-color:var(--gold);color:#7a5f1a}
+.mood-peace.active{background:var(--sage-light);border-color:var(--sage);color:#2d5e34}
+.mood-heavy.active{background:var(--rose-light);border-color:var(--rose);color:#7a2f2f}
+.mood-curious.active{background:var(--lavender-light);border-color:var(--lavender);color:#4a3d78}
+.mood-tired.active{background:var(--paper2);border-color:var(--ink3);color:var(--ink2)}
+
+/* ---- PILLARS ---- */
+.pillar-row{margin-bottom:12px}
+.pillar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pillar-name{font-size:12px;color:var(--ink2)}
+.pillar-val{font-size:11px;color:var(--ink3)}
+.pillar-track{height:4px;background:var(--paper3);border-radius:2px;overflow:hidden;cursor:pointer}
+.pillar-fill{height:100%;border-radius:2px;transition:width 0.4s ease}
+
+/* ---- REFLECT ---- */
+.reflect-area{width:100%;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ink);background:var(--paper);resize:none;line-height:1.7;outline:none;transition:border-color 0.2s;min-height:90px}
+.reflect-area:focus{border-color:var(--gold)}
+.reflect-area::placeholder{color:var(--ink3);font-style:italic}
+
+/* ---- BUTTONS ---- */
+.btn-primary{padding:8px 20px;border-radius:20px;border:none;background:var(--ink);color:var(--paper);font-size:12px;cursor:pointer;transition:background 0.15s;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--gold)}
+.btn-ghost{padding:8px 16px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12px;cursor:pointer;color:var(--ink2);transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.btn-ghost:hover{background:var(--paper2)}
+.save-btn{margin-top:8px;padding:7px 18px;border-radius:20px;border:none;background:var(--ink);color:var(--paper);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s}
+.save-btn:hover{background:var(--gold)}
+
+/* ---- CALENDAR ---- */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.cal-nav{display:flex;gap:6px}
+.cal-nav-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;color:var(--ink)}
+.cal-nav-btn:hover{background:var(--ink);color:var(--paper)}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-name{text-align:center;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);padding:6px 0}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:var(--r);font-size:13px;cursor:pointer;transition:all 0.15s;position:relative;border:1px solid transparent;gap:2px}
+.cal-day:hover{background:var(--paper2)}
+.cal-day.other-month{color:var(--ink3)}
+.cal-day.today{background:var(--ink);color:var(--paper);font-weight:500}
+.cal-day.has-entry::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);position:absolute;bottom:4px}
+.cal-day.today.has-entry::after{background:var(--gold-light)}
+.cal-day.selected{border-color:var(--gold);background:var(--gold-light)}
+.cal-entry-panel{background:#fff;border:1px solid var(--line);border-radius:var(--rl);padding:1.4rem;margin-top:1.25rem}
+.cal-entry-date{font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:10px;color:var(--ink)}
+.entry-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.entry-chip{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--paper2);color:var(--ink2)}
+.entry-text{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ink);line-height:1.7;font-style:italic;white-space:pre-wrap}
+.entry-placeholder{font-size:13px;color:var(--ink3);font-style:italic}
+
+/* ---- GUIDE ---- */
+.guide-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.g-tab{padding:6px 14px;border-radius:20px;border:1px solid var(--line);font-size:12px;cursor:pointer;background:#fff;color:var(--ink2);transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.g-tab:hover{background:var(--paper2);color:var(--ink)}
+.g-tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.g-panel{display:none}
+.g-panel.active{display:block}
+
+.rule-row{border-left:2px solid;padding:10px 14px;border-radius:0 var(--r) var(--r) 0;margin-bottom:8px}
+.rule-do{border-color:var(--sage);background:var(--sage-light)}
+.rule-do .rtag{font-size:10px;font-weight:500;letter-spacing:0.06em;color:#2d5e34;margin-bottom:3px;text-transform:uppercase}
+.rule-dont{border-color:var(--rose);background:var(--rose-light)}
+.rule-dont .rtag{font-size:10px;font-weight:500;letter-spacing:0.06em;color:#7a2f2f;margin-bottom:3px;text-transform:uppercase}
+.rule-warn{border-color:var(--gold);background:var(--gold-light)}
+.rule-warn .rtag{font-size:10px;font-weight:500;letter-spacing:0.06em;color:#7a5f1a;margin-bottom:3px;text-transform:uppercase}
+.rule-row p{font-size:13px;color:var(--ink);line-height:1.6}
+
+.tip-card{background:var(--paper2);border-radius:var(--r);padding:11px 14px;margin-bottom:8px}
+.tip-card strong{font-weight:500;color:var(--lavender);font-size:13px}
+.tip-card p{font-size:13px;color:var(--ink2);line-height:1.6;margin-top:2px}
+
+.strength-pill{display:inline-flex;align-items:center;font-size:12px;padding:5px 12px;border-radius:20px;margin:3px}
+
+/* ---- JOURNAL ---- */
+.journal-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem}
+.journal-entry{background:#fff;border:1px solid var(--line);border-radius:var(--rl);padding:1.1rem 1.3rem;cursor:pointer;transition:all 0.15s}
+.journal-entry:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(184,151,74,0.1)}
+.je-date{font-size:11px;color:var(--ink3);margin-bottom:4px}
+.je-mood{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;background:var(--paper2);color:var(--ink2);margin-bottom:6px}
+.je-preview{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ink2);line-height:1.5;font-style:italic;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.new-entry-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r);border:1px dashed var(--line);background:none;font-size:13px;color:var(--ink3);cursor:pointer;width:100%;justify-content:center;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.new-entry-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-light)}
+.journal-compose{background:#fff;border:1px solid var(--line);border-radius:var(--rl);padding:1.4rem}
+.compose-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.compose-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400}
+.close-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:none;cursor:pointer;font-size:16px;color:var(--ink2);display:flex;align-items:center;justify-content:center}
+.prompt-row{background:var(--lavender-light);border-radius:var(--r);padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--lavender);font-style:italic}
+.mood-select-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.compose-area{width:100%;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--ink);background:var(--paper);resize:none;line-height:1.8;outline:none;min-height:160px;transition:border-color 0.2s}
+.compose-area:focus{border-color:var(--gold)}
+.compose-area::placeholder{color:var(--ink3);font-style:italic}
+.compose-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+
+/* ---- SETTINGS (export/import/install) ---- */
+.settings-section{margin-bottom:1.75rem}
+.settings-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;background:#fff;
+  border:1px solid var(--line);border-radius:var(--r);
+  margin-bottom:8px;
+}
+.settings-row-info{flex:1}
+.settings-row-info strong{display:block;font-size:13px;font-weight:500;margin-bottom:2px}
+.settings-row-info span{font-size:12px;color:var(--ink3)}
+.settings-action{display:flex;gap:8px}
+.btn-setting{
+  padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all 0.15s;
+  border:1px solid var(--line);background:var(--paper2);color:var(--ink2);
+}
+.btn-setting:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn-setting.danger:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+.install-banner{
+  background:linear-gradient(135deg,var(--ink),#2d2a20);
+  border-radius:var(--rl);padding:1.25rem 1.5rem;
+  margin-bottom:1.75rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.install-banner p{color:rgba(247,244,238,0.8);font-size:13px;line-height:1.5}
+.install-banner strong{color:var(--paper);display:block;margin-bottom:3px}
+.btn-install{padding:8px 18px;border-radius:20px;border:none;background:var(--gold);color:#fff;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;font-weight:500}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem;text-align:center}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--gold)}
+.stat-lbl{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* ---- TOAST ---- */
+.toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--paper);
+  padding:10px 20px;border-radius:20px;font-size:13px;
+  opacity:0;transition:all 0.3s;pointer-events:none;z-index:999;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---- PAGE ANIM ---- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page{animation:fadeUp 0.25s ease both}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--paper3);border-radius:3px}
+
+/* ---- RESPONSIVE / MOBILE ---- */
+@media(max-width:760px){
+  .shell{grid-template-columns:1fr;min-height:100dvh}
+  .sidebar{
+    position:fixed;bottom:0;left:0;right:0;height:auto;
+    flex-direction:row;
+    padding:0.6rem 0.5rem calc(0.6rem + var(--safe-bottom)) 0.5rem;
+    z-index:100;border-top:1px solid var(--line);border-right:none;
+    overflow-x:auto;align-items:center;gap:0;
+    justify-content:space-around;
+  }
+  .logo,.sidebar-quote,.nav-label{display:none}
+  .nav-list{flex-direction:row;gap:0}
+  .nav-item{
+    flex-direction:column;gap:3px;font-size:10px;
+    padding:6px 10px;min-width:56px;
+  }
+  .nav-icon{width:20px;height:20px}
+  .main{
+    padding:1.25rem;
+    padding-bottom:calc(80px + var(--safe-bottom));
+    max-height:none;
+    overflow-y:visible;
+  }
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .greeting-text{font-size:22px}
+  .quote-text{font-size:16px}
+  .stat-row{grid-template-columns:repeat(3,1fr)}
+  .install-banner{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">C</div>
+    <div class="logo-text">Châu <span>INFJ · Advocate</span></div>
+  </div>
+  <div>
+    <div class="nav-label">Navigate</div>
+    <ul class="nav-list">
+      <li><button class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 1116 0A8 8 0 012 10zm8-3a1 1 0 100 2 1 1 0 000-2zm-2 6a2 2 0 104 0H8z"/></svg>
+        Today
+      </button></li>
+      <li><button class="nav-item" onclick="showPage('calendar',this)">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/></svg>
+        Calendar
+      </button></li>
+      <li><button class="nav-item" onclick="showPage('journal',this)">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-2.207 2.207L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+        Journal
+      </button></li>
+      <li><button class="nav-item" onclick="showPage('guide',this)">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+        Guide
+      </button></li>
+      <li><button class="nav-item" onclick="showPage('settings',this)">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+        Settings
+      </button></li>
+    </ul>
+  </div>
+  <div class="sidebar-quote">
+    <p id="sidebar-q-text">"The privilege of a lifetime is to become who you truly are."</p>
+    <cite id="sidebar-q-auth">— Carl Jung</cite>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<!-- ======= TODAY ======= -->
+<div id="page-dashboard" class="page">
+  <div class="greeting-card">
+    <div class="greeting-date" id="g-date"></div>
+    <div class="greeting-text" id="g-text">Good morning, Châu.</div>
+    <div class="greeting-sub" id="g-sub">Your daily space to reflect, track, and thrive.</div>
+  </div>
+
+  <div class="quote-card">
+    <div class="quote-mark">"</div>
+    <div class="quote-text" id="qotd-text"></div>
+    <div class="quote-meta">
+      <span class="quote-author" id="qotd-author"></span>
+      <span class="quote-tag" id="qotd-tag"></span>
+    </div>
+    <div class="quote-nav">
+      <button class="quote-btn" onclick="prevQuote()">← prev</button>
+      <button class="quote-btn" onclick="nextQuote()">next →</button>
+      <button class="quote-btn" onclick="randomQuote()">shuffle</button>
+    </div>
+  </div>
+
+  <div class="grid-2 gap-sec">
+    <div class="card">
+      <div class="sec-title">Daily rituals</div>
+      <div id="habits-list">
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">Morning quiet time</span><span class="habit-tag">self-care</span></div>
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">One act of kindness</span><span class="habit-tag">esteem</span></div>
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">Align action to value</span><span class="habit-tag">integrity</span></div>
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">Daydream window (10 min)</span><span class="habit-tag">evolution</span></div>
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">Evening reflection</span><span class="habit-tag">responsibility</span></div>
+        <div class="habit-row"><div class="habit-check" onclick="toggleHabit(this)"></div><span class="habit-label">Say no to one extra thing</span><span class="habit-tag">boundaries</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card card-sm">
+        <div class="sec-title">How are you feeling?</div>
+        <div class="mood-grid">
+          <button class="mood-btn mood-energy" onclick="setMood(this,'Energized ✦')">✦ Energized</button>
+          <button class="mood-btn mood-peace" onclick="setMood(this,'Peaceful ◌')">◌ Peaceful</button>
+          <button class="mood-btn mood-heavy" onclick="setMood(this,'Heavy ◆')">◆ Heavy</button>
+          <button class="mood-btn mood-curious" onclick="setMood(this,'Curious ◈')">◈ Curious</button>
+          <button class="mood-btn mood-tired" onclick="setMood(this,'Tired ◇')">◇ Tired</button>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="sec-title">One sentence today</div>
+        <textarea class="reflect-area" id="today-note" placeholder="What is one truth you want to hold today…" rows="3" oninput="autoSaveNote()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card gap-sec">
+    <div class="sec-title">Growth pillars — how am I doing this week?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 2rem">
+      <div>
+        <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-esteem</span><span class="pillar-val" id="pv-0">70%</span></div><div class="pillar-track" onclick="cyclePillar(0,event)"><div class="pillar-fill" id="pf-0" style="width:70%;background:var(--lavender)"></div></div></div>
+        <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-respect</span><span class="pillar-val" id="pv-1">60%</span></div><div class="pillar-track" onclick="cyclePillar(1,event)"><div class="pillar-fill" id="pf-1" style="width:60%;background:var(--sage)"></div></div></div>
+        <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-confidence</span><span class="pillar-val" id="pv-2">75%</span></div><div class="pillar-track" onclick="cyclePillar(2,event)"><div class="pillar-fill" id="pf-2" style="width:75%;background:var(--gold)"></div></div></div>
+      </div>
+      <div>
+        <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-evolution</span><span class="pillar-val" id="pv-3">80%</span></div><div class="pillar-track" onclick="cyclePillar(3,event)"><div class="pillar-fill" id="pf-3" style="width:80%;background:var(--gold)"></div></div></div>
+        <div class="pillar-row"><div class="pillar-head"><span class="pillar-name">Self-responsibility</span><span class="pillar-val" id="pv-4">65%</span></div><div class="pillar-track" onclick="cyclePillar(4,event)"><div class="pillar-fill" id="pf-4" style="width:65%;background:var(--rose)"></div></div></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--ink3);font-style:italic">Click a bar to adjust your rating</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-title">Today's INFJ reminder</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink);line-height:1.7" id="reminder-text"></p>
+    <div style="margin-top:8px;font-size:11px;color:var(--ink3)" id="reminder-tag"></div>
+  </div>
+</div>
+
+<!-- ======= CALENDAR ======= -->
+<div id="page-calendar" class="page" style="display:none">
+  <div class="page-header"><h1>Calendar</h1><p>Track your journey, one day at a time.</p></div>
+  <div class="card gap-sec">
+    <div class="cal-header">
+      <div class="cal-month" id="cal-month-label"></div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+        <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+  <div class="cal-entry-panel" id="cal-entry-panel">
+    <div class="cal-entry-date" id="cal-entry-date">Select a day to view your notes</div>
+    <div id="cal-entry-body"><p class="entry-placeholder">No entry for this day yet.</p></div>
+  </div>
+</div>
+
+<!-- ======= JOURNAL ======= -->
+<div id="page-journal" class="page" style="display:none">
+  <div class="page-header"><h1>Journal</h1><p>Your private space to think out loud.</p></div>
+  <div id="journal-compose-wrap" style="display:none">
+    <div class="journal-compose gap-sec">
+      <div class="compose-header">
+        <div class="compose-title" id="compose-date-label"></div>
+        <button class="close-btn" onclick="closeCompose()">×</button>
+      </div>
+      <div class="prompt-row" id="journal-prompt"></div>
+      <div class="mood-select-row">
+        <span style="font-size:12px;color:var(--ink3);align-self:center">Mood:</span>
+        <button class="mood-btn mood-energy" onclick="selectJournalMood(this,'Energized ✦')">✦ Energized</button>
+        <button class="mood-btn mood-peace" onclick="selectJournalMood(this,'Peaceful ◌')">◌ Peaceful</button>
+        <button class="mood-btn mood-heavy" onclick="selectJournalMood(this,'Heavy ◆')">◆ Heavy</button>
+        <button class="mood-btn mood-curious" onclick="selectJournalMood(this,'Curious ◈')">◈ Curious</button>
+        <button class="mood-btn mood-tired" onclick="selectJournalMood(this,'Tired ◇')">◇ Tired</button>
+      </div>
+      <textarea class="compose-area" id="compose-area" placeholder="Begin writing… let it flow without judgment."></textarea>
+      <div class="compose-actions">
+        <button class="btn-ghost" onclick="closeCompose()">Cancel</button>
+        <button class="btn-primary" onclick="saveEntry()">Save entry</button>
+      </div>
+    </div>
+  </div>
+  <div id="journal-entries-wrap">
+    <div class="journal-list" id="journal-list"></div>
+    <button class="new-entry-btn" onclick="openCompose()">+ New journal entry</button>
+  </div>
+</div>
+
+<!-- ======= GUIDE ======= -->
+<div id="page-guide" class="page" style="display:none">
+  <div class="page-header"><h1>INFJ Guide</h1><p>Your personal growth reference.</p></div>
+  <div class="guide-tabs">
+    <button class="g-tab active" onclick="showGuide('g-overview',this)">Overview</button>
+    <button class="g-tab" onclick="showGuide('g-do',this)">Do this</button>
+    <button class="g-tab" onclick="showGuide('g-dont',this)">Avoid this</button>
+    <button class="g-tab" onclick="showGuide('g-tips',this)">Suggestions</button>
+    <button class="g-tab" onclick="showGuide('g-warn',this)">Watch out</button>
+  </div>
+  <div id="g-overview" class="g-panel active">
+    <div class="sec-title" style="margin-bottom:12px">Core strengths</div>
+    <div style="margin-bottom:1.5rem">
+      <span class="strength-pill" style="background:var(--lavender-light);color:var(--lavender)">Deep empathy</span>
+      <span class="strength-pill" style="background:var(--lavender-light);color:var(--lavender)">Strong moral compass</span>
+      <span class="strength-pill" style="background:var(--lavender-light);color:var(--lavender)">Visionary thinking</span>
+      <span class="strength-pill" style="background:var(--sage-light);color:var(--sage)">Pattern recognition</span>
+      <span class="strength-pill" style="background:var(--sage-light);color:var(--sage)">Integrity-driven</span>
+      <span class="strength-pill" style="background:var(--gold-light);color:#7a5f1a">Compassionate helper</span>
+      <span class="strength-pill" style="background:var(--gold-light);color:#7a5f1a">Creative problem-solver</span>
+    </div>
+    <div class="sec-title" style="margin-bottom:12px">Common blind spots</div>
+    <div style="margin-bottom:1.5rem">
+      <span class="strength-pill" style="background:var(--rose-light);color:var(--rose)">Perfectionism</span>
+      <span class="strength-pill" style="background:var(--rose-light);color:var(--rose)">Over-giving → burnout</span>
+      <span class="strength-pill" style="background:var(--rose-light);color:var(--rose)">Rigid ideals</span>
+      <span class="strength-pill" style="background:var(--gold-light);color:#7a5f1a">Sensitive to criticism</span>
+      <span class="strength-pill" style="background:var(--gold-light);color:#7a5f1a">Self-doubt</span>
+      <span class="strength-pill" style="background:var(--gold-light);color:#7a5f1a">Ignoring daily details</span>
+    </div>
+    <div class="grid-3">
+      <div class="card card-sm"><div style="font-size:18px;margin-bottom:6px">🎯</div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Purpose and cause</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Fulfillment comes when actions align with values and serve something bigger.</div></div>
+      <div class="card card-sm"><div style="font-size:18px;margin-bottom:6px">🤝</div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Deep connection</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Meaningful bonds where you offer real empathy and insight, not small talk.</div></div>
+      <div class="card card-sm"><div style="font-size:18px;margin-bottom:6px">🌱</div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Constant growth</div><div style="font-size:12px;color:var(--ink2);line-height:1.6">Self-evolution is central to your identity. Life is a lifelong chain of insights.</div></div>
+    </div>
+  </div>
+  <div id="g-do" class="g-panel">
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Schedule self-care as seriously as work obligations — put it on your calendar and keep the appointment.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Celebrate small wins. Recognize that "this hasn't succeeded… yet" is still forward movement.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Align daily actions with your values — even tiny acts (thanking someone, lending a hand) count as integrity in motion.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Ask people "is there anything I can do for you?" and truly listen rather than assuming you know what's best.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Build daily rituals (morning, midday, bedtime) with small, manageable tasks to stay grounded in the present.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Reframe failure as a lesson: "what was this trying to teach me?" rather than evidence of unworthiness.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Find at least one trusted peer or mentor who gives honest feedback. Deep one-on-one relationships fuel your growth most.</p></div>
+    <div class="rule-row rule-do"><div class="rtag">Do</div><p>Set aside daily "daydream time" — a window to let thoughts flow freely before returning to structured work.</p></div>
+  </div>
+  <div id="g-dont" class="g-panel">
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Taking on everyone's problems. Helping without self-care leads to burnout — and a burned-out you helps no one.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Treating your ideals as rigid dogma. When passion hardens into inflexibility, you lose the compassion that motivated it.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Assuming you know what's best for others. People's needs must come from them, not from your projection.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Reacting to criticism as a personal attack. Feedback about an action is not a verdict on your values.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Chasing your "ideal self" so hard that you neglect practical daily life. Grand growth still requires paying the bills.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Letting negative self-talk go unchallenged. Write it down and consciously rewrite it with a kinder truth.</p></div>
+    <div class="rule-row rule-dont"><div class="rtag">Avoid</div><p>Isolating when overwhelmed. It feels protective but deepens the problem — seek reconnection instead.</p></div>
+  </div>
+  <div id="g-tips" class="g-panel">
+    <div class="tip-card"><strong>Self-esteem top-up</strong><p>Once a week, list 3 things you did purely for yourself. If the list feels short, that's your sign to schedule more.</p></div>
+    <div class="tip-card"><strong>Rebalancing perfectionism</strong><p>Intentionally do something you'll be bad at — a new sport, drawing, a language. Practice tolerating "good enough."</p></div>
+    <div class="tip-card"><strong>Confidence check-in</strong><p>Rate your confidence 1–10 monthly. Then list one recent action that aligned with your values. Notice the connection.</p></div>
+    <div class="tip-card"><strong>Mindfulness for future-focused minds</strong><p>When planning how to be better "after this," pause. Describe three things around you in the present moment.</p></div>
+    <div class="tip-card"><strong>Handling criticism</strong><p>Before responding, paraphrase it back — "what I hear you saying is…" to separate feedback from emotional charge.</p></div>
+    <div class="tip-card"><strong>Taming the imagination</strong><p>Capture every idea in one notebook or app. Let it live there — your mind can release it safely.</p></div>
+    <div class="tip-card"><strong>Staying grounded in details</strong><p>Set a weekly recurring slot (same day, same time) for admin — finances, emails, logistics. Routine removes friction.</p></div>
+    <div class="tip-card"><strong>Locus of control</strong><p>At day's end, sort events into "things I can control" vs "things I can't." Release the second column.</p></div>
+  </div>
+  <div id="g-warn" class="g-panel">
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Burnout creeping in:</strong> If you feel resentful toward people you're helping, or too exhausted to show empathy — stop and recharge.</p></div>
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Idealism turning rigid:</strong> If you're fighting for a position more than caring about the people involved, passion has outrun compassion.</p></div>
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Learned helplessness:</strong> If "why bother?" becomes frequent, build small guaranteed wins back into your days immediately.</p></div>
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Isolation spiral:</strong> Withdrawing to recharge is healthy. Withdrawing to avoid an imperfect world is not — notice the difference.</p></div>
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Unsolicited help mode:</strong> If you're pushing solutions on people who didn't ask, check whether you're helping them or boosting your own worth.</p></div>
+    <div class="rule-row rule-warn"><div class="rtag">Watch out</div><p><strong>Creativity without output:</strong> If ideas never leave your head, the imagination has become an escape rather than a tool.</p></div>
+  </div>
+</div>
+
+<!-- ======= SETTINGS ======= -->
+<div id="page-settings" class="page" style="display:none">
+  <div class="page-header"><h1>Settings</h1><p>Manage your data, install the app, and customize your experience.</p></div>
+
+  <div id="install-banner-wrap">
+    <div class="install-banner">
+      <div>
+        <strong>Install as an app</strong>
+        <p>Add this dashboard to your home screen for quick daily access — works offline too.</p>
+      </div>
+      <button class="btn-install" id="install-btn" onclick="triggerInstall()">Install app</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="sec-title">Your stats</div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num" id="stat-entries">0</div><div class="stat-lbl">Journal entries</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-days">0</div><div class="stat-lbl">Days tracked</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-habits">0</div><div class="stat-lbl">Habits checked</div></div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="sec-title">Data management</div>
+    <div class="settings-row">
+      <div class="settings-row-info">
+        <strong>Export your data</strong>
+        <span>Download a backup JSON file of all your journals, moods, and settings.</span>
+      </div>
+      <div class="settings-action">
+        <button class="btn-setting" onclick="exportData()">Export JSON</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-row-info">
+        <strong>Import data</strong>
+        <span>Restore from a previously exported backup file.</span>
+      </div>
+      <div class="settings-action">
+        <button class="btn-setting" onclick="document.getElementById('import-file').click()">Import JSON</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-row-info">
+        <strong>Clear all data</strong>
+        <span>Permanently delete all your entries and settings. This cannot be undone.</span>
+      </div>
+      <div class="settings-action">
+        <button class="btn-setting danger" onclick="clearData()">Clear data</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="sec-title">Hosting on GitHub Pages</div>
+    <div class="card" style="font-size:13px;color:var(--ink2);line-height:1.8">
+      <p style="margin-bottom:10px">To go live, upload these files to a GitHub repository and enable Pages:</p>
+      <ol style="padding-left:1.2rem;display:flex;flex-direction:column;gap:6px">
+        <li>Create a new GitHub repository (e.g. <code style="background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:12px">chau-dashboard</code>)</li>
+        <li>Upload <code style="background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:12px">index.html</code>, <code style="background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:12px">manifest.json</code>, <code style="background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:12px">sw.js</code>, and both icon files</li>
+        <li>Go to <strong>Settings → Pages</strong>, set source to <strong>main branch / root</strong></li>
+        <li>Your site goes live at <code style="background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:12px">https://yourusername.github.io/chau-dashboard</code></li>
+        <li>On mobile, open that URL in Chrome/Safari → <strong>Add to Home Screen</strong> to install as an app</li>
+      </ol>
+      <p style="margin-top:12px;color:var(--ink3);font-style:italic;font-size:12px">All your data stays in your browser's local storage — it never leaves your device.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// =================== DATA ===================
+const QUOTES = [
+  {text:"The world is not a problem to be solved; it is a living being to which we belong.",author:"Llewelyn Vaughan-Lee",tag:"self-evolution"},
+  {text:"The privilege of a lifetime is to become who you truly are.",author:"Carl Jung",tag:"self-esteem"},
+  {text:"Your vision will become clear only when you can look into your own heart. Who looks outside, dreams; who looks inside, awakes.",author:"Carl Jung",tag:"self-respect"},
+  {text:"Perfectionism is the voice of the oppressor. Progress, not perfection.",author:"Anne Lamott",tag:"self-esteem"},
+  {text:"The most common form of despair is not being who you are.",author:"Søren Kierkegaard",tag:"integrity"},
+  {text:"You do not need to be good. You do not have to walk on your knees for a hundred miles through the desert repenting.",author:"Mary Oliver",tag:"self-compassion"},
+  {text:"The curious paradox is that when I accept myself just as I am, then I can change.",author:"Carl Rogers",tag:"self-evolution"},
+  {text:"Speak your truth quietly and clearly; and listen to others.",author:"Max Ehrmann",tag:"self-confidence"},
+  {text:"What you seek is seeking you.",author:"Rumi",tag:"purpose"},
+  {text:"Almost everything will work again if you unplug it for a few minutes, including you.",author:"Anne Lamott",tag:"self-care"},
+  {text:"I am not what happened to me. I am what I choose to become.",author:"Carl Jung",tag:"self-responsibility"},
+  {text:"You yourself, as much as anybody in the entire universe, deserve your love and affection.",author:"Buddha",tag:"self-care"},
+  {text:"Go to the limits of your longing. Flare up like a flame and make big shadows I can move in.",author:"Rainer Maria Rilke",tag:"self-evolution"},
+  {text:"The cave you fear to enter holds the treasure you seek.",author:"Joseph Campbell",tag:"courage"},
+  {text:"Daring to set boundaries is about having the courage to love ourselves.",author:"Brené Brown",tag:"self-respect"},
+  {text:"The only journey is the one within.",author:"Rainer Maria Rilke",tag:"self-evolution"},
+  {text:"Do not be too moral. You may cheat yourself out of much of life.",author:"Henry David Thoreau",tag:"balance"},
+  {text:"Imperfection is beauty, madness is genius, and it's better to be absolutely ridiculous than absolutely boring.",author:"Marilyn Monroe",tag:"self-acceptance"},
+  {text:"Tell me, what is it you plan to do with your one wild and precious life?",author:"Mary Oliver",tag:"purpose"},
+  {text:"We must be willing to let go of the life we planned so as to have the life that is waiting for us.",author:"Joseph Campbell",tag:"self-evolution"},
+];
+
+const REMINDERS = [
+  {text:"You don't have to perfectly represent an ideal in order to live it. Every messenger is an imperfect messenger.", tag:"self-esteem"},
+  {text:"Caring for yourself is not selfish — it returns you to a place of balance so you can give from abundance, not depletion.", tag:"self-care"},
+  {text:"Perfectionism is a trap that leads to paralysis. It's better to attempt something imperfectly than to do nothing at all.", tag:"self-respect"},
+  {text:"Your confidence grows when your actions reflect your values. Even one small aligned act today is enough.", tag:"self-confidence"},
+  {text:"Small steps forward are steps forward. They deserve to be celebrated, not dismissed.", tag:"self-evolution"},
+  {text:"You are allowed to say no. That boundary is an act of integrity, not abandonment.", tag:"boundaries"},
+  {text:"The validation of others is subjective. Their opinions alone say nothing about your worth.", tag:"self-esteem"},
+  {text:"Learning from mistakes and moving forward without shame is always available to you.", tag:"self-respect"},
+  {text:"Happiness is not a destination after growth — it exists in the present moment, exactly as things are.", tag:"self-evolution"},
+  {text:"Your causes and values invite others to grow on their own terms. You lead by being, not by insisting.", tag:"integrity"},
+  {text:"Ask what others want before assuming. Your empathy is powerful — let it listen before it acts.", tag:"connection"},
+  {text:"Restorative rest is not wasted time. It is the soil in which your best ideas and energy grow.", tag:"self-care"},
+  {text:"You are more than your productivity. Your quiet presence, your empathy, your inner world — these are contributions too.", tag:"self-esteem"},
+  {text:"Failure is not the opposite of growth. It is a chapter of it.", tag:"self-evolution"},
+];
+
+const JOURNAL_PROMPTS = [
+  "What is one value I lived out today, however small?",
+  "Where did I stretch myself thin this week — and what do I need back?",
+  "What would I tell a dear friend who is feeling what I'm feeling right now?",
+  "What am I postponing out of fear of imperfection?",
+  "What made me feel most like myself recently?",
+  "Where is my passion becoming rigidity? Where is it still open?",
+  "What is one thing I can release from my control today?",
+  "Write a letter to your future self, one year from now.",
+  "What does 'enough' look like for me right now?",
+  "Which of my ideals have I been living — and which have become a burden?",
+];
+
+// =================== STATE ===================
+let state = {
+  quoteIdx:0,
+  calYear:new Date().getFullYear(),
+  calMonth:new Date().getMonth(),
+  selectedDay:null,
+  journalMood:'',
+  habits:{},
+  pillars:[70,60,75,80,65],
+  journals:[],
+  todayNote:'',
+  todayMood:'',
+};
+const STORAGE_KEY='chau_dashboard_v2';
+
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+function load(){
+  try{
+    const d=localStorage.getItem(STORAGE_KEY);
+    if(d){
+      const p=JSON.parse(d);
+      if(p.pillars)state.pillars=p.pillars;
+      if(p.journals)state.journals=p.journals;
+      if(p.habits)state.habits=p.habits;
+      if(p.todayNote)state.todayNote=p.todayNote;
+      if(p.todayMood)state.todayMood=p.todayMood;
+    }
+  }catch(e){}
+}
+
+// =================== PWA ===================
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('install-banner-wrap').style.display='block';
+});
+window.addEventListener('appinstalled',()=>{
+  deferredPrompt=null;
+  document.getElementById('install-banner-wrap').style.display='none';
+  toast('App installed! Find it on your home screen.');
+});
+
+function triggerInstall(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(r=>{
+      if(r.outcome==='accepted')toast('Installing…');
+      deferredPrompt=null;
+    });
+  } else {
+    toast('To install: use your browser menu → "Add to Home Screen"');
+  }
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+
+// =================== TOAST ===================
+function toast(msg,duration=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+// =================== INIT ===================
+load();
+initGreeting();
+initQuote();
+initReminder();
+initPillars();
+loadHabits();
+loadTodayNote();
+renderCalendar();
+renderJournal();
+updateStats();
+
+// Hide install banner until PWA event fires (unless already shown)
+document.getElementById('install-banner-wrap').style.display='none';
+
+function initGreeting(){
+  const now=new Date();
+  const h=now.getHours();
+  const greeting=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('g-text').textContent=greeting+', Châu.';
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('g-date').textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+  document.getElementById('g-sub').textContent=h<12
+    ?'Begin with intention. Today is full of possibility.'
+    :h<17?'You\'re in the middle of something. Keep going.'
+    :'Time to reflect. What did today teach you?';
+}
+
+function initQuote(){
+  const doy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);
+  state.quoteIdx=doy%QUOTES.length;
+  renderQuote();
+}
+function renderQuote(){
+  const q=QUOTES[state.quoteIdx];
+  document.getElementById('qotd-text').textContent=q.text;
+  document.getElementById('qotd-author').textContent='— '+q.author;
+  document.getElementById('qotd-tag').textContent=q.tag;
+  document.getElementById('sidebar-q-text').textContent='"'+q.text+'"';
+  document.getElementById('sidebar-q-auth').textContent='— '+q.author;
+}
+function nextQuote(){state.quoteIdx=(state.quoteIdx+1)%QUOTES.length;renderQuote();}
+function prevQuote(){state.quoteIdx=(state.quoteIdx-1+QUOTES.length)%QUOTES.length;renderQuote();}
+function randomQuote(){state.quoteIdx=Math.floor(Math.random()*QUOTES.length);renderQuote();}
+
+function initReminder(){
+  const doy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);
+  const r=REMINDERS[doy%REMINDERS.length];
+  document.getElementById('reminder-text').textContent=r.text;
+  document.getElementById('reminder-tag').textContent='↳ '+r.tag;
+}
+
+function initPillars(){
+  state.pillars.forEach((v,i)=>{
+    document.getElementById('pf-'+i).style.width=v+'%';
+    document.getElementById('pv-'+i).textContent=v+'%';
+  });
+}
+function cyclePillar(i,e){
+  const rect=e.currentTarget.getBoundingClientRect();
+  const pct=Math.round(((e.clientX-rect.left)/rect.width)*100);
+  const snapped=Math.round(pct/5)*5;
+  state.pillars[i]=Math.max(5,Math.min(100,snapped));
+  document.getElementById('pf-'+i).style.width=state.pillars[i]+'%';
+  document.getElementById('pv-'+i).textContent=state.pillars[i]+'%';
+  save();
+}
+
+function toggleHabit(el){
+  el.classList.toggle('done');
+  const label=el.nextElementSibling;
+  label.classList.toggle('done');
+  const key='habit_'+new Date().toDateString()+'_'+label.textContent;
+  state.habits[key]=el.classList.contains('done');
+  save();updateStats();
+}
+function loadHabits(){
+  document.querySelectorAll('.habit-row').forEach(row=>{
+    const check=row.querySelector('.habit-check');
+    const label=row.querySelector('.habit-label');
+    const key='habit_'+new Date().toDateString()+'_'+label.textContent;
+    if(state.habits[key]){check.classList.add('done');label.classList.add('done');}
+  });
+}
+
+function setMood(btn,mood){
+  document.querySelectorAll('#page-dashboard .mood-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state.todayMood=mood;save();
+}
+function loadTodayNote(){
+  const area=document.getElementById('today-note');
+  if(state.todayNote)area.value=state.todayNote;
+  if(state.todayMood){
+    document.querySelectorAll('#page-dashboard .mood-btn').forEach(b=>{
+      if(b.textContent.trim()===state.todayMood.trim())b.classList.add('active');
+    });
+  }
+}
+let noteTimer;
+function autoSaveNote(){
+  clearTimeout(noteTimer);
+  noteTimer=setTimeout(()=>{state.todayNote=document.getElementById('today-note').value;save();},800);
+}
+
+// =================== CALENDAR ===================
+function renderCalendar(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent=months[state.calMonth]+' '+state.calYear;
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>{
+    const el=document.createElement('div');el.className='cal-day-name';el.textContent=d;grid.appendChild(el);
+  });
+  const first=new Date(state.calYear,state.calMonth,1).getDay();
+  const daysInMonth=new Date(state.calYear,state.calMonth+1,0).getDate();
+  const today=new Date();
+  const prevDays=new Date(state.calYear,state.calMonth,0).getDate();
+  for(let i=first-1;i>=0;i--){const d=document.createElement('div');d.className='cal-day other-month';d.textContent=prevDays-i;grid.appendChild(d);}
+  for(let day=1;day<=daysInMonth;day++){
+    const d=document.createElement('div');d.className='cal-day';d.textContent=day;
+    const isToday=today.getFullYear()===state.calYear&&today.getMonth()===state.calMonth&&today.getDate()===day;
+    if(isToday)d.classList.add('today');
+    const dateKey=state.calYear+'-'+(state.calMonth+1)+'-'+day;
+    if(state.journals.some(j=>j.dateKey===dateKey))d.classList.add('has-entry');
+    if(state.selectedDay===dateKey)d.classList.add('selected');
+    d.onclick=()=>selectCalDay(day,dateKey,d);
+    grid.appendChild(d);
+  }
+  const total=first+daysInMonth;const remaining=total%7===0?0:7-(total%7);
+  for(let i=1;i<=remaining;i++){const d=document.createElement('div');d.className='cal-day other-month';d.textContent=i;grid.appendChild(d);}
+}
+function selectCalDay(day,dateKey,el){
+  document.querySelectorAll('.cal-day').forEach(d=>d.classList.remove('selected'));
+  el.classList.add('selected');state.selectedDay=dateKey;
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-entry-date').textContent=months[state.calMonth]+' '+day+', '+state.calYear;
+  const entries=state.journals.filter(j=>j.dateKey===dateKey);
+  const body=document.getElementById('cal-entry-body');
+  if(entries.length===0){
+    body.innerHTML='<p class="entry-placeholder">No entry for this day yet. Head to the Journal tab to write one.</p>';
+  } else {
+    body.innerHTML=entries.map(e=>`
+      <div style="margin-bottom:12px">
+        <div class="entry-chips"><span class="entry-chip">${e.mood||'No mood'}</span><span class="entry-chip">${e.time}</span></div>
+        <div class="entry-text">${e.text}</div>
+      </div>
+    `).join('<hr style="border:none;border-top:1px solid var(--line2);margin:12px 0">');
+  }
+}
+function calNav(dir){
+  state.calMonth+=dir;
+  if(state.calMonth>11){state.calMonth=0;state.calYear++;}
+  if(state.calMonth<0){state.calMonth=11;state.calYear--;}
+  state.selectedDay=null;renderCalendar();
+  document.getElementById('cal-entry-body').innerHTML='<p class="entry-placeholder">Select a day to view your notes.</p>';
+  document.getElementById('cal-entry-date').textContent='Select a day to view your notes';
+}
+
+// =================== JOURNAL ===================
+let composingMood='';
+function openCompose(){
+  composingMood='';
+  document.getElementById('journal-compose-wrap').style.display='block';
+  document.getElementById('journal-entries-wrap').style.display='none';
+  const now=new Date();
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('compose-date-label').textContent=months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+  document.getElementById('journal-prompt').textContent='✦ Prompt: '+JOURNAL_PROMPTS[Math.floor(Math.random()*JOURNAL_PROMPTS.length)];
+  document.getElementById('compose-area').value='';
+  document.querySelectorAll('.mood-select-row .mood-btn').forEach(b=>b.classList.remove('active'));
+}
+function closeCompose(){
+  document.getElementById('journal-compose-wrap').style.display='none';
+  document.getElementById('journal-entries-wrap').style.display='block';
+}
+function selectJournalMood(btn,mood){
+  document.querySelectorAll('.mood-select-row .mood-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');composingMood=mood;
+}
+function saveEntry(){
+  const text=document.getElementById('compose-area').value.trim();
+  if(!text){toast('Write something first :)');return;}
+  const now=new Date();
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dateKey=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+  state.journals.unshift({
+    id:Date.now(),
+    date:months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear(),
+    dateKey,
+    time:now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}),
+    mood:composingMood,
+    text,
+  });
+  save();closeCompose();renderJournal();renderCalendar();updateStats();
+  toast('Entry saved ✦');
+}
+function renderJournal(){
+  const list=document.getElementById('journal-list');
+  if(state.journals.length===0){
+    list.innerHTML='<div style="text-align:center;padding:2rem;color:var(--ink3);font-style:italic;font-family:\'Cormorant Garamond\',serif;font-size:16px">Your journal is empty.<br>Begin when you\'re ready.</div>';
+    return;
+  }
+  list.innerHTML=state.journals.map(e=>`
+    <div class="journal-entry">
+      <div class="je-date">${e.date} · ${e.time}</div>
+      ${e.mood?`<span class="je-mood">${e.mood}</span>`:''}
+      <div class="je-preview">${e.text}</div>
+    </div>
+  `).join('');
+}
+
+// =================== SETTINGS ===================
+function updateStats(){
+  document.getElementById('stat-entries').textContent=state.journals.length;
+  const uniqueDays=new Set(state.journals.map(j=>j.dateKey)).size;
+  document.getElementById('stat-days').textContent=uniqueDays;
+  const totalHabits=Object.values(state.habits).filter(Boolean).length;
+  document.getElementById('stat-habits').textContent=totalHabits;
+}
+
+function exportData(){
+  const data=JSON.stringify(state,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=new Date().toISOString().slice(0,10);
+  a.href=url;a.download=`chau-dashboard-backup-${date}.json`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Backup downloaded ✦');
+}
+
+function importData(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(confirm('This will replace all your current data. Are you sure?')){
+        if(parsed.pillars)state.pillars=parsed.pillars;
+        if(parsed.journals)state.journals=parsed.journals;
+        if(parsed.habits)state.habits=parsed.habits;
+        if(parsed.todayNote)state.todayNote=parsed.todayNote;
+        if(parsed.todayMood)state.todayMood=parsed.todayMood;
+        save();
+        initPillars();loadHabits();loadTodayNote();
+        renderCalendar();renderJournal();updateStats();
+        toast('Data restored successfully ✦');
+      }
+    }catch(err){toast('Invalid file — please use a valid backup JSON.');}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function clearData(){
+  if(confirm('This will permanently delete all your journal entries, habits, and settings. Are you sure?')){
+    state={
+      quoteIdx:state.quoteIdx,
+      calYear:new Date().getFullYear(),calMonth:new Date().getMonth(),
+      selectedDay:null,journalMood:'',
+      habits:{},pillars:[70,60,75,80,65],
+      journals:[],todayNote:'',todayMood:'',
+    };
+    localStorage.removeItem(STORAGE_KEY);
+    save();initPillars();loadHabits();loadTodayNote();
+    renderCalendar();renderJournal();updateStats();
+    toast('All data cleared.');
+  }
+}
+
+// =================== NAV ===================
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).style.display='block';
+  btn.classList.add('active');
+  if(id==='calendar')renderCalendar();
+  if(id==='journal'){closeCompose();renderJournal();}
+  if(id==='settings')updateStats();
+  window.scrollTo(0,0);
+}
+function showGuide(id,btn){
+  document.querySelectorAll('.g-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.g-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');btn.classList.add('active');
+}
+</script>
+</body>
+</html>
